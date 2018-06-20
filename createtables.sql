@@ -6,7 +6,8 @@ create table estado (
 create table cidade(
 	cidade_id serial primary key,
 	nome varchar(50) NOT NULL,
-	estado_sigla varchar(2) references estado(estado_sigla) NOT NULL
+	estado_sigla varchar(2) references estado(estado_sigla) NOT NULL,
+	UNIQUE (estado_sigla, nome)
 );
 
 create table bairro(
@@ -34,6 +35,7 @@ create table usuario(
 	usuario_id serial primary key,
 	nome varchar(300) NOT NULL,
 	whatsapp varchar(11) NOT NULL,
+	email varchar(100) UNIQUE NOT NULL,
 	faculdade_id int references faculdade(faculdade_id)
 );
 
