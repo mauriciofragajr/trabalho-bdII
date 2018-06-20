@@ -1,10 +1,10 @@
 
-INSERT INTO estado(sigla,nome) VALUES('RJ','Rio de Janeiro');
-INSERT INTO estado(sigla,nome) VALUES('SP','São Paulo');
-INSERT INTO estado(sigla,nome) VALUES('MG','Minas Gerais');
+INSERT INTO estado(estado_sigla,nome) VALUES('RJ','Rio de Janeiro');
+INSERT INTO estado(estado_sigla,nome) VALUES('SP','São Paulo');
+INSERT INTO estado(estado_sigla,nome) VALUES('MG','Minas Gerais');
 
-INSERT INTO cidade (estado_id, nome) VALUES(1,'Rio de Janeiro');
-INSERT INTO cidade (estado_id, nome) VALUES(1,'Niterói');
+INSERT INTO cidade (estado_sigla, nome) VALUES('RJ','Rio de Janeiro');
+INSERT INTO cidade (estado_sigla, nome) VALUES('RJ','Niterói');
 
 SELECT * FROM cidade;
 
@@ -29,43 +29,61 @@ INSERT INTO faculdade (nome, sigla) VALUES ('Universidade Federal do Rio de Jane
 
 SELECT * FROM faculdade;
 
-INSERT INTO usuario_tipo (nome) VALUES ('Aluno'),('Professor'),('Servidor');
-SELECT * FROM usuario_tipo;
-
 INSERT INTO campus (faculdade_id,bairro_id,nome) VALUES (1,10,'Praia Vermelha'),(1,13,'Valonguinho'),(1,12,'Gragoatá');
 INSERT INTO campus (faculdade_id,bairro_id,nome) VALUES (2,17,'Praia Vermelha');
 
 SELECT * FROM campus;
 
-INSERT INTO carona_status (nome) VALUES ('ABERTA'),('FECHADA'),('INICIADA'),('REALIZADA'),('CANCELADA');
-
-SELECT * FROM carona_status;
-
 INSERT INTO usuario (nome,whatsapp) VALUES ('José Mauricio','21991346707');
-UPDATE usuario SET faculdade_id = 1, usuario_tipo_id = 1 WHERE usuario_id = 1;
-INSERT INTO usuario (nome,whatsapp,faculdade_id,usuario_tipo_id) VALUES ('Motorista','21991346708',1,1);
+INSERT INTO usuario (nome,whatsapp,faculdade_id) VALUES ('Motorista','21991346708',1);
+INSERT INTO usuario (nome,whatsapp,faculdade_id) VALUES ('Passageiro','21991346708',1);
+INSERT INTO usuario (nome,whatsapp,faculdade_id) VALUES ('Outra Faculdade','21991369595',2);
 
 SELECT * FROM usuario;
 
 INSERT INTO carro (placa,modelo,cor,usuario_id) VALUES ('KKK0000','Fiat Palio','Preto',2);
+INSERT INTO carro (placa,modelo,cor,usuario_id) VALUES ('KKK0001','Fiat Palio','Preto',1);
 
 SELECT * FROM carro;
 
+-- FACULDADE ERRADA
 INSERT INTO carona (usuario_id,
 					hora_saida,
-					carona_status_id,
+					carona_status,
 					valor,
 					vagas_qtd,
 					campus_id,
 					bairro_id,
 					carro_id,
 					indo_para_faculdade) VALUES 
-					(2,'2018-05-23 15:00:00',1,600,4,7,1,4,true);
+					(2,'2018-06-23 15:00:00','ABERTA',600,4,4,1,1,true);
+-- CARRO ERRADO
+INSERT INTO carona (usuario_id,
+					hora_saida,
+					carona_status,
+					valor,
+					vagas_qtd,
+					campus_id,
+					bairro_id,
+					carro_id,
+					indo_para_faculdade) VALUES 
+					(2,'2018-06-23 15:00:00','ABERTA',600,4,1,1,3,true);
+-- TUDO CERTO
+INSERT INTO carona (usuario_id,
+					hora_saida,
+					carona_status,
+					valor,
+					vagas_qtd,
+					campus_id,
+					bairro_id,
+					carro_id,
+					indo_para_faculdade) VALUES 
+					(2,'2018-06-23 15:00:00','ABERTA',600,2,1,1,1,true);
+
 					
 SELECT * FROM carona;
 
-INSERT INTO carona_participa (usuario_id,carona_id) VALUES (2,11);
+-- INTERESSE NA PRÓPRIA CARONA 
+INSERT INTO carona_interesse (usuario_id,carona_id) VALUES (2,8);
 
-SELECT * FROM carona_participa;
-
-SELECT * FROM usuario where usuario_id not in (select usuario_id from carona);
+SELECT * FROM carona_interesse;

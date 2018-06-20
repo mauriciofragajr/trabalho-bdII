@@ -1,15 +1,22 @@
-CREATE FUNCTION check_carona() RETURNS trigger AS $check_carona$
+CREATE OR REPLACE FUNCTION check_carona() RETURNS trigger AS $check_carona$
 	DECLARE
 		carona_faculdade_id int;
 		usuario_faculdade_id int;
 
         carro_usuario_id int;
     BEGIN
+    
         -- REGRA 1: O campus sinalizado na carona deve pertencer à faculdade do usuário criador da carona
         -- Pegando a faculdade correspondente ao campus da nova carona 
 		SELECT faculdade_id INTO carona_faculdade_id FROM campus where campus_id = NEW.campus_id;
         -- Pegando a faculdade correspondente ao usuário que está criando a carona
 		SELECT faculdade_id INTO usuario_faculdade_id FROM usuario where usuario_id = NEW.usuario_id;
+
+        -- Verificando se ele não tem faculdade
+        IF usuario_faculdade_id IS NULL THEN
+            RAISE EXCEPTION 'Usuário não pertence à nenhuma faculdade.';
+        END IF;
+
         IF carona_faculdade_id !=  usuario_faculdade_id THEN
             RAISE EXCEPTION 'A carona deve ser oferecida para alguma campus da faculdade do motorista.';
         END IF;

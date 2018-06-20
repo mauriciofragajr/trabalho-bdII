@@ -1,13 +1,12 @@
 create table estado (
-	estado_id serial primary key,
-	sigla varchar(2) NOT NULL UNIQUE,
+	estado_sigla varchar(2) primary key,
 	nome varchar(20) NOT NULL
 );
 
 create table cidade(
 	cidade_id serial primary key,
 	nome varchar(50) NOT NULL,
-	estado_id int references estado(estado_id) NOT NULL
+	estado_sigla varchar(2) references estado(estado_sigla) NOT NULL
 );
 
 create table bairro(
@@ -23,11 +22,6 @@ create table faculdade(
 	sigla varchar(10) NOT NULL
 );
 
-create table usuario_tipo(
-	usuario_tipo_id serial primary key,
-	nome varchar(100) UNIQUE NOT NULL
-);
-
 create table campus(
 	campus_id serial primary key,
 	faculdade_id int references faculdade(faculdade_id),
@@ -36,17 +30,11 @@ create table campus(
 	UNIQUE(nome,faculdade_id)
 );
 
-create table carona_status(
-	carona_status_id serial primary key,
-	nome varchar(15) UNIQUE NOT NULL
-);
-
 create table usuario(
 	usuario_id serial primary key,
 	nome varchar(300) NOT NULL,
 	whatsapp varchar(11) NOT NULL,
-	faculdade_id int references faculdade(faculdade_id),
-	usuario_tipo_id int references usuario_tipo(usuario_tipo_id)
+	faculdade_id int references faculdade(faculdade_id)
 );
 
 create table carro(
@@ -56,6 +44,8 @@ create table carro(
 	cor varchar(20) NOT NULL,
 	usuario_id int references usuario(usuario_id) NOT NULL
 );
+
+CREATE TYPE carona_status AS ENUM ('ABERTA', 'FECHADA', 'INICIADA','REALIZADA','CANCELADA');
 
 create table carona(
 	carona_id serial primary key,
@@ -67,7 +57,7 @@ create table carona(
 	bairro_id int references bairro(bairro_id) NOT NULL,
 	campus_id int references campus(campus_id) NOT NULL,
 	indo_para_faculdade bool NOT NULL,
-	carona_status_id int references carona_status(carona_status_id) NOT NULL,
+	carona_status carona_status NOT NULL,
 	criado_em timestamp DEFAULT now()
 );
 
@@ -77,3 +67,16 @@ create table carona_participa(
 	avaliacao int,
 	primary key(usuario_id, carona_id)
 );
+
+create table carona_interesse(
+	carona_id int references carona(carona_id) NOT NULL,
+	usuario_id int references usuario(usuario_id) NOT NULL,
+    criado_em timestamp DEFAULT now(),
+	primary key(usuario_id, carona_id)
+);
+
+create table usuario_avaliacao(
+	usuario_id int references usuario(usuario_id),
+	avaliacao_media real,
+	qtd_avaliacao int
+)
